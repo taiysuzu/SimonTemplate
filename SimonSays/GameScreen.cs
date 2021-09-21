@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Media;
 using System.Drawing.Drawing2D;
 using System.Threading;
+using System.IO;
 
 namespace SimonSays
 {
@@ -18,12 +19,17 @@ namespace SimonSays
         Random randGen = new Random();
 
         Color[] colorArray = new Color[8];
-        SoundPlayer[] soundArray = new SoundPlayer[5];
+        SoundPlayer[] soundArray = new SoundPlayer[6];
         Button[] buttonArray = new Button[4];
+
+        System.Windows.Media.MediaPlayer backgroundMusic = new System.Windows.Media.MediaPlayer();
 
         public GameScreen()
         {
             InitializeComponent();
+
+            backgroundMusic.Open(new Uri(Application.StartupPath + "/Resources/Crazy Frog  Axel F.wav"));
+            backgroundMusic.MediaEnded += new EventHandler(BackgroundMusicEnded);
         }
 
         private void GameScreen_Load(object sender, EventArgs e)
@@ -42,6 +48,7 @@ namespace SimonSays
             soundArray[2] = new SoundPlayer(Properties.Resources.yellow);
             soundArray[3] = new SoundPlayer(Properties.Resources.blue);
             soundArray[4] = new SoundPlayer(Properties.Resources.mistake);
+            soundArray[5] = new SoundPlayer(Properties.Resources.Crazy_Frog__Axel_F);
 
             buttonArray[0] = greenButton;
             buttonArray[1] = redButton;
@@ -51,6 +58,7 @@ namespace SimonSays
             Form1.patternList.Clear();                              //TODO: clear the pattern list from form1, refresh, pause for a bit, and run ComputerTurn()
             Refresh();
             Thread.Sleep(1000);
+            backgroundMusic.Play();
             ComputerTurn();
         }
 
@@ -100,6 +108,13 @@ namespace SimonSays
             Refresh();
             Thread.Sleep(800);
         }
+        public void EndOfPattern()
+        {
+            if (Form1.patternList.Count == guess)
+            {
+                ComputerTurn();
+            }
+        }
 
         //TODO: create one of these event methods for each button
         private void greenButton_Click(object sender, EventArgs e)
@@ -108,10 +123,7 @@ namespace SimonSays
             {
                 ButtonColorChange(0, 1, 0, 0);                    // light up button, play sound, and pause // set button colour back to original
                 guess++;                                               // add one to the guess index
-                if (Form1.patternList.Count == guess)                      // check to see if we are at the end of the pattern. If so:
-                {
-                    ComputerTurn();                     // call ComputerTurn() method
-                }
+                EndOfPattern();                      // check to see if we are at the end of the pattern. If so call ComputerTurn() method
             }
             else
             {
@@ -125,10 +137,7 @@ namespace SimonSays
             {
                 ButtonColorChange(1, 3, 2, 1);
                 guess++;
-                if (Form1.patternList.Count == guess)
-                {
-                    ComputerTurn();
-                }
+                EndOfPattern();
             }
             else
             {
@@ -142,10 +151,7 @@ namespace SimonSays
             {
                 ButtonColorChange(2, 5, 4, 2);
                 guess++;
-                if (Form1.patternList.Count == guess)
-                {
-                    ComputerTurn();
-                }
+                EndOfPattern();
             }
             else
             {
@@ -159,15 +165,18 @@ namespace SimonSays
             {
                 ButtonColorChange(3, 7, 6, 3);
                 guess++;
-                if (Form1.patternList.Count == guess)
-                {
-                    ComputerTurn();
-                }
+                EndOfPattern();
             }
             else
             {
                 GameOver();
             }
+        }
+
+        private void BackgroundMusicEnded(object sender, EventArgs e)
+        {
+            backgroundMusic.Stop();
+            backgroundMusic.Play();
         }
     }
 }
