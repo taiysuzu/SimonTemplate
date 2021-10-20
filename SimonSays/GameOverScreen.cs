@@ -20,14 +20,14 @@ namespace SimonSays
 
         private void GameOverScreen_Load(object sender, EventArgs e)
         {
-            //TODO: show the length of the pattern
+            //show the length of the pattern
             lengthLabel.Text = $"{Form1.patternList.Count - 1}";
             Highscores();
         }
 
         private void closeButton_Click(object sender, EventArgs e)
         {
-            //TODO: close this screen and open the MenuScreen
+            //close this screen and open the MenuScreen
             Form f = this.FindForm();
             f.Controls.Clear();
             MenuScreen ms = new MenuScreen();
@@ -35,7 +35,7 @@ namespace SimonSays
         }
 
         public void Highscores()
-        {
+        {   //record and display session high scores
             highscoreList.Add(Form1.patternList.Count - 1);
             highscoreList.Sort();
             highscoreList.Reverse();
